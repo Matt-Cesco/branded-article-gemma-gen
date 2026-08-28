@@ -1,0 +1,6 @@
+[project]
+name = "limitless-content-engine"
+version = "0.1.0"
+description = "SEO, content research and AI editorial tooling for Limitless Travel"
+requires-python = ">=3.11"
+dependencies = []

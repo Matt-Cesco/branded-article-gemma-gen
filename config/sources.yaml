@@ -1,0 +1,12 @@
+sources:
+  website:
+    enabled: true
+
+  search_console:
+    enabled: false
+
+  analytics:
+    enabled: false
+
+  keyword_research:
+    enabled: false

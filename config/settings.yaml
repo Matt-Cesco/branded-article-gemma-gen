@@ -1,0 +1,11 @@
+project:
+  name: Limitless Travel Content Engine
+  language: en-GB
+
+site:
+  base_url: ""
+
+paths:
+  guidelines: content-guidelines
+  data: data
+  articles: articles
