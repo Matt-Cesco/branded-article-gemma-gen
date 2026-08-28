@@ -2,7 +2,7 @@
 
 ## Project purpose
 
-The project will eventually help Limitless Travel identify, research, generate and optimise accessible-travel content designed to provide useful information and generate qualified enquiries.
+The project will help to identify, research, generate and optimise content designed to provide useful information and generate qualified enquiries.
 
 ## Architecture
 
@@ -11,7 +11,7 @@ The system separates editorial guidance, website understanding, research, scorin
 ```text
 content-guidelines
     |
-Defines HOW Limitless communicates
+Defines HOW the brand communicates
 
 crawler
     |
