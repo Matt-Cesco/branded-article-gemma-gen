@@ -6,6 +6,8 @@ import argparse
 import csv
 import json
 import re
+import shutil
+import subprocess
 import time
 from collections import Counter, defaultdict, deque
 from dataclasses import asdict, dataclass
@@ -77,7 +79,9 @@ JS_REQUIRED_MARKERS = [
     "please turn javascript on",
     "__next_data__",
     "id=\"root\"",
+    "id=root",
     "id=\"app\"",
+    "id=app",
 ]
 
 
@@ -88,6 +92,7 @@ class SourceConfig:
     start_url: str
     source_type: str
     priority: str
+    discovery_strategy: str = "html"
 
 
 @dataclass
@@ -202,7 +207,12 @@ class TopicDiscoveryCrawler:
         self._robots: dict[str, robotparser.RobotFileParser] = {}
         self._last_request_at: dict[str, float] = defaultdict(float)
 
-    def run(self, sources: list[SourceConfig], crawl: bool = True) -> dict[str, Any]:
+    def run(
+        self,
+        sources: list[SourceConfig],
+        crawl: bool = True,
+        update_latest: bool = True,
+    ) -> dict[str, Any]:
         run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         raw_dir = self.repo_root / "data" / "raw" / "research"
         processed_dir = self.repo_root / "data" / "processed" / "research"
@@ -230,12 +240,13 @@ class TopicDiscoveryCrawler:
         self._write_json(raw_run_dir / "source-statuses.json", source_statuses)
         self._write_json(raw_run_dir / "source-pages-raw.json", [asdict(page) for page in pages])
         self._write_json(processed_run_dir / "source-pages.json", [asdict(page) for page in pages])
-        self._write_outputs(output_run_dir, pages)
+        self._write_outputs(output_run_dir, pages, source_statuses)
 
-        self._write_json(raw_dir / "source-statuses.json", source_statuses)
-        self._write_json(raw_dir / "source-pages-raw.json", [asdict(page) for page in pages])
-        self._write_json(processed_dir / "source-pages.json", [asdict(page) for page in pages])
-        self._write_outputs(output_dir, pages)
+        if update_latest:
+            self._write_json(raw_dir / "source-statuses.json", source_statuses)
+            self._write_json(raw_dir / "source-pages-raw.json", [asdict(page) for page in pages])
+            self._write_json(processed_dir / "source-pages.json", [asdict(page) for page in pages])
+            self._write_outputs(output_dir, pages, source_statuses)
         return {
             "pages": pages,
             "source_statuses": source_statuses,
@@ -243,14 +254,28 @@ class TopicDiscoveryCrawler:
             "raw_run_dir": raw_run_dir,
             "processed_run_dir": processed_run_dir,
             "output_run_dir": output_run_dir,
+            "latest_updated": update_latest,
         }
 
     def _crawl_source(self, source: SourceConfig) -> tuple[list[DiscoveredPage], dict[str, Any]]:
+        if source.discovery_strategy == "sitemap_first":
+            pages, failures = self._discover_from_sitemap(source, set())
+            return pages, {
+                "source": source.name,
+                "status": "sitemap_first" if pages else "no_relevant_pages_found",
+                "start_url": source.start_url,
+                "pages_crawled": 0,
+                "relevant_pages": len(pages),
+                "sitemap_candidates": len(pages),
+                "failures": failures[:20],
+            }
+
         queue: deque[tuple[str, int, str | None]] = deque([(source.start_url, 0, None)])
         seen: set[str] = set()
         pages: list[DiscoveredPage] = []
         failures: list[dict[str, Any]] = []
         source_js_required = False
+        sitemap_candidate_count = 0
 
         while queue and len(seen) < self.max_pages_per_domain:
             url, depth, discovered_from = queue.popleft()
@@ -297,9 +322,16 @@ class TopicDiscoveryCrawler:
                         queue.append((next_url, depth + 1, normalised_url))
 
         status = "ok"
-        if not pages and source_js_required:
-            status = "javascript_required"
-        elif not pages and failures:
+        if not pages and (source_js_required or failures):
+            sitemap_pages, sitemap_failures = self._discover_from_sitemap(source, seen)
+            sitemap_candidate_count = len(sitemap_pages)
+            pages.extend(sitemap_pages)
+            failures.extend(sitemap_failures)
+            if sitemap_pages:
+                status = "sitemap_fallback"
+            elif source_js_required:
+                status = "javascript_required"
+        if not pages and failures and status == "ok":
             status = "no_relevant_pages_found"
         return pages, {
             "source": source.name,
@@ -307,8 +339,78 @@ class TopicDiscoveryCrawler:
             "start_url": source.start_url,
             "pages_crawled": len(seen),
             "relevant_pages": len(pages),
+            "sitemap_candidates": sitemap_candidate_count,
             "failures": failures[:20],
         }
+
+    def _discover_from_sitemap(
+        self,
+        source: SourceConfig,
+        seen: set[str],
+    ) -> tuple[list[DiscoveredPage], list[dict[str, Any]]]:
+        sitemap_url = parse.urljoin(source.base_url, "/sitemap.xml")
+        if not self._allowed_by_robots(sitemap_url):
+            return [], [{"url": sitemap_url, "status": "sitemap_blocked_by_robots"}]
+
+        result = self._fetch(sitemap_url, accepted_content_types=("text/xml", "application/xml", "application/rss+xml"))
+        if result.status != "ok" or not result.html:
+            return [], [asdict(result)]
+
+        urls = extract_sitemap_urls(result.html)
+        pages: list[DiscoveredPage] = []
+        for url in urls:
+            normalised_url = canonicalize_url(url, source.base_url)
+            if not normalised_url or normalised_url in seen:
+                continue
+            if not is_same_domain(normalised_url, source.base_url):
+                continue
+            if not is_sitemap_research_candidate(normalised_url, source.start_url):
+                continue
+            pages.append(self._normalise_sitemap_page(source, normalised_url, sitemap_url))
+            if len(pages) >= self.max_pages_per_domain:
+                break
+        return pages, []
+
+    def _normalise_sitemap_page(
+        self,
+        source: SourceConfig,
+        url: str,
+        discovered_from: str,
+    ) -> DiscoveredPage:
+        title = title_from_url(url)
+        metadata_text = f"{url} {title}"
+        destinations, countries = extract_destinations(metadata_text, self.destinations)
+        accessibility = extract_accessibility_topics(metadata_text, self.accessibility_topics)
+        travel_topics = extract_travel_topics(metadata_text)
+        combos = build_topic_combinations(destinations, countries, accessibility, travel_topics)
+        conversion = guess_conversion_relevance(destinations + countries, accessibility, travel_topics)
+        return DiscoveredPage(
+            source=source.name,
+            source_type=source.source_type,
+            url=url,
+            canonical_url=url,
+            title=title,
+            h1=None,
+            publication_date=None,
+            updated_date=None,
+            author=None,
+            headings={"h2": [], "h3": []},
+            summary=None,
+            category="sitemap_candidate",
+            tags=[],
+            destination_mentions=destinations,
+            country_mentions=countries,
+            accessibility_topics=accessibility,
+            travel_topics=travel_topics,
+            topic_combinations=combos,
+            content_type=infer_content_type(url, title, []),
+            search_intent_guess=guess_search_intent(title, []),
+            commercial_relevance=conversion,
+            conversion_relevance=conversion,
+            discovered_from=discovered_from,
+            crawl_depth=0,
+            crawled_at=datetime.now(timezone.utc).isoformat(),
+        )
 
     def _normalise_page(
         self,
@@ -367,7 +469,7 @@ class TopicDiscoveryCrawler:
             crawled_at=datetime.now(timezone.utc).isoformat(),
         )
 
-    def _fetch(self, url: str) -> FetchResult:
+    def _fetch(self, url: str, accepted_content_types: tuple[str, ...] = ("text/html",)) -> FetchResult:
         domain = parse.urlparse(url).netloc
         elapsed = time.monotonic() - self._last_request_at[domain]
         if elapsed < self.delay_seconds:
@@ -380,7 +482,7 @@ class TopicDiscoveryCrawler:
                 with request.urlopen(req, timeout=DEFAULT_TIMEOUT) as response:
                     content_type = response.headers.get("content-type", "")
                     status_code = getattr(response, "status", None)
-                    if "text/html" not in content_type:
+                    if not any(accepted in content_type for accepted in accepted_content_types):
                         return FetchResult("non_html", url, status_code=status_code)
                     charset = response.headers.get_content_charset() or "utf-8"
                     html = response.read().decode(charset, errors="replace")
@@ -395,8 +497,45 @@ class TopicDiscoveryCrawler:
                 if attempt == 0:
                     time.sleep(self.delay_seconds)
                     continue
-                return FetchResult("request_error", url, error=str(exc))
-        return FetchResult("request_error", url, error="temporary failure after retry")
+                return self._fetch_with_curl(url) or FetchResult("request_error", url, error=str(exc))
+        return self._fetch_with_curl(url) or FetchResult("request_error", url, error="temporary failure after retry")
+
+    def _fetch_with_curl(self, url: str) -> FetchResult | None:
+        curl_path = shutil.which("curl.exe") or shutil.which("curl")
+        if not curl_path:
+            return None
+        try:
+            completed = subprocess.run(
+                [
+                    curl_path,
+                    "-L",
+                    "--silent",
+                    "--show-error",
+                    "--noproxy",
+                    "*",
+                    "--ssl-no-revoke",
+                    "--max-time",
+                    str(DEFAULT_TIMEOUT),
+                    "-A",
+                    USER_AGENT,
+                    url,
+                ],
+                check=False,
+                capture_output=True,
+                timeout=DEFAULT_TIMEOUT + 2,
+            )
+        except (OSError, subprocess.SubprocessError) as exc:
+            return FetchResult("request_error", url, error=str(exc))
+
+        if completed.returncode != 0:
+            error = completed.stderr.decode("utf-8", errors="replace")
+            return FetchResult("request_error", url, error=error)
+        html = completed.stdout.decode("utf-8", errors="replace")
+        if not html.strip():
+            return FetchResult("empty_response", url)
+        domain = parse.urlparse(url).netloc
+        self._last_request_at[domain] = time.monotonic()
+        return FetchResult("ok", url, status_code=None, html=html)
 
     def _allowed_by_robots(self, url: str) -> bool:
         parsed = parse.urlparse(url)
@@ -411,7 +550,13 @@ class TopicDiscoveryCrawler:
             self._robots[parsed.netloc] = rp
         return self._robots[parsed.netloc].can_fetch(USER_AGENT, url)
 
-    def _write_outputs(self, output_dir: Path, pages: list[DiscoveredPage]) -> None:
+    def _write_outputs(
+        self,
+        output_dir: Path,
+        pages: list[DiscoveredPage],
+        source_statuses: list[dict[str, Any]],
+    ) -> None:
+        self._write_source_statuses_csv(output_dir / "source-statuses.csv", source_statuses)
         self._write_source_pages_csv(output_dir / "source-pages.csv", pages)
         self._write_frequency_csv(
             output_dir / "destinations.csv",
@@ -426,6 +571,33 @@ class TopicDiscoveryCrawler:
             lambda p: p.accessibility_topics,
         )
         self._write_topic_combinations_csv(output_dir / "topic-combinations.csv", pages)
+
+    def _write_source_statuses_csv(self, path: Path, source_statuses: list[dict[str, Any]]) -> None:
+        columns = [
+            "source",
+            "status",
+            "start_url",
+            "pages_crawled",
+            "relevant_pages",
+            "sitemap_candidates",
+            "failure_count",
+        ]
+        with path.open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(handle, fieldnames=columns)
+            writer.writeheader()
+            for status in source_statuses:
+                failures = status.get("failures") or []
+                writer.writerow(
+                    {
+                        "source": status.get("source"),
+                        "status": status.get("status"),
+                        "start_url": status.get("start_url"),
+                        "pages_crawled": status.get("pages_crawled", 0),
+                        "relevant_pages": status.get("relevant_pages", 0),
+                        "sitemap_candidates": status.get("sitemap_candidates", 0),
+                        "failure_count": len(failures),
+                    }
+                )
 
     def _write_source_pages_csv(self, path: Path, pages: list[DiscoveredPage]) -> None:
         columns = [
@@ -576,8 +748,10 @@ def is_same_domain(url: str, base_url: str) -> bool:
 
 
 def is_close_to_research_area(url: str, start_url: str) -> bool:
-    path = parse.urlparse(url).path.lower()
+    path = parse.urlparse(url).path.lower().rstrip("/")
     start_path = parse.urlparse(start_url).path.lower().rstrip("/")
+    if path == start_path:
+        return True
     if start_path and path.startswith(start_path):
         return True
     return any(term in path for term in CANDIDATE_PATH_TERMS)
@@ -588,6 +762,56 @@ def is_discovery_link(url: str, link_text: str) -> bool:
     if any(skip in haystack for skip in ["privacy", "terms", "login", "account", "basket", "checkout"]):
         return False
     return any(term in haystack for term in CANDIDATE_PATH_TERMS + RELEVANCE_TERMS)
+
+
+def extract_sitemap_urls(xml: str) -> list[str]:
+    return [
+        _clean_text(match)
+        for match in re.findall(r"<loc>\s*(.*?)\s*</loc>", xml, flags=re.IGNORECASE)
+        if _clean_text(match)
+    ]
+
+
+def is_sitemap_research_candidate(url: str, start_url: str) -> bool:
+    path = parse.urlparse(url).path.lower().strip("/")
+    if not path:
+        return False
+    if path in {
+        "contact-us",
+        "brochure",
+        "about-us",
+        "sitemap",
+        "links",
+        "privacy-policy",
+        "enquiry-form",
+        "search-results",
+    }:
+        return False
+    if is_close_to_research_area(url, start_url):
+        return True
+
+    slug_text = path.replace("-", " ")
+    has_accessibility = any(term in slug_text for term in ["accessible", "disability", "disabled", "mobility"])
+    has_travel = any(
+        term in slug_text
+        for term in [
+            "travel",
+            "holiday",
+            "holidays",
+            "hotel",
+            "hotels",
+            "tour",
+            "tours",
+            "villa",
+            "beach",
+            "flying",
+            "transfers",
+            "brochure",
+            "city breaks",
+            "excursions",
+        ]
+    )
+    return has_accessibility and has_travel
 
 
 def is_relevant_page(page: DiscoveredPage, visible_text: str) -> bool:
@@ -633,6 +857,13 @@ def _clean_text(value: str) -> str:
     return re.sub(r"\s+", " ", value).strip()
 
 
+def title_from_url(url: str) -> str:
+    path = parse.urlparse(url).path.strip("/")
+    if not path:
+        return url
+    return path.split("/")[-1].replace("-", " ").title()
+
+
 def _unique(values: list[str]) -> list[str]:
     seen: set[str] = set()
     unique_values: list[str] = []
@@ -647,6 +878,12 @@ def _unique(values: list[str]) -> list[str]:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Discover external accessible-travel topic inspiration.")
     parser.add_argument("--no-crawl", action="store_true", help="Write config/status files without HTTP crawling.")
+    parser.add_argument("--source", help="Only crawl sources whose name contains this text.")
+    parser.add_argument(
+        "--update-latest",
+        action="store_true",
+        help="Update top-level latest snapshot files even for dry or source-specific runs.",
+    )
     parser.add_argument("--max-depth", type=int, default=DEFAULT_MAX_DEPTH)
     parser.add_argument("--max-pages-per-domain", type=int, default=DEFAULT_MAX_PAGES_PER_DOMAIN)
     parser.add_argument("--delay-seconds", type=float, default=DEFAULT_DELAY_SECONDS)
@@ -654,20 +891,29 @@ def main() -> None:
 
     repo_root = Path(__file__).resolve().parents[1]
     sources = load_sources(repo_root)
+    if args.source:
+        source_filter = args.source.lower()
+        sources = [source for source in sources if source_filter in source.name.lower()]
+        if not sources:
+            raise SystemExit(f"No configured source matched: {args.source}")
     crawler = TopicDiscoveryCrawler(
         repo_root=repo_root,
         max_depth=args.max_depth,
         max_pages_per_domain=args.max_pages_per_domain,
         delay_seconds=args.delay_seconds,
     )
-    result = crawler.run(sources, crawl=not args.no_crawl)
+    latest_should_update = args.update_latest or (not args.no_crawl and not args.source)
+    result = crawler.run(sources, crawl=not args.no_crawl, update_latest=latest_should_update)
     print(f"Configured sources: {len(sources)}")
     print(f"Discovered relevant pages: {len(result['pages'])}")
     print(f"Run ID: {result['run_id']}")
     print(f"Raw run files: {result['raw_run_dir']}")
     print(f"Processed run files: {result['processed_run_dir']}")
     print(f"Opportunity CSV run files: {result['output_run_dir']}")
-    print("Latest snapshots also written under data/raw/research, data/processed/research and data/output/opportunities")
+    if result["latest_updated"]:
+        print("Latest snapshots also written under data/raw/research, data/processed/research and data/output/opportunities")
+    else:
+        print("Latest snapshots were not updated for this source-specific or dry run")
 
 
 if __name__ == "__main__":

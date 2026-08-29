@@ -113,7 +113,25 @@ Optional crawl controls:
 python scripts\discover_topics.py --max-depth 2 --max-pages-per-domain 40 --delay-seconds 2
 ```
 
+To test one source at a time:
+
+```powershell
+python scripts\discover_topics.py --source "Enable Holidays"
+```
+
+Source-specific runs create their own timestamped run folder but do not update the top-level latest snapshot files by default. This prevents a debug run for one source from making `data/output/opportunities/source-pages.csv` look like the full crawl lost other sources.
+
+If you intentionally want a source-specific run to become the latest snapshot, add:
+
+```powershell
+python scripts\discover_topics.py --source "Enable Holidays" --update-latest
+```
+
 The crawler respects `robots.txt`, uses a descriptive User-Agent, applies conservative delays, limits crawl depth and pages per domain, and marks sources as JavaScript-required when useful content is unavailable through normal HTTP requests.
+
+Some sites, including Enable Holidays, return a JavaScript app shell for normal page requests. For those sites, the crawler now tries the public sitemap as a fallback and records sitemap-derived topic leads rather than pretending it extracted full article HTML. These rows will usually have `category` set to `sitemap_candidate` in the processed JSON.
+
+Enable Holidays is configured with `discovery_strategy: sitemap_first` because its blog listing uses on-page buttons for pagination without changing the URL. A normal crawler cannot follow those buttons as separate pages. The sitemap-first strategy uses the public sitemap to discover likely blog/topic URLs instead.
 
 ### Where Results Are Saved
 
@@ -129,6 +147,7 @@ The main CSV files for each run are:
 
 ```text
 data/output/opportunities/runs/<RUN_ID>/source-pages.csv
+data/output/opportunities/runs/<RUN_ID>/source-statuses.csv
 data/output/opportunities/runs/<RUN_ID>/destinations.csv
 data/output/opportunities/runs/<RUN_ID>/accessibility-topics.csv
 data/output/opportunities/runs/<RUN_ID>/topic-combinations.csv
@@ -138,6 +157,7 @@ Latest snapshot files are also written here for convenience:
 
 ```text
 data/output/opportunities/source-pages.csv
+data/output/opportunities/source-statuses.csv
 data/output/opportunities/destinations.csv
 data/output/opportunities/accessibility-topics.csv
 data/output/opportunities/topic-combinations.csv
@@ -149,6 +169,48 @@ Raw and normalised JSON outputs are saved under:
 data/raw/research/
 data/processed/research/
 ```
+
+### Which Result Files To Open
+
+After a real crawl, start with the newest folder under:
+
+```text
+data/output/opportunities/runs/
+```
+
+The newest folder has the latest timestamp-style name, for example:
+
+```text
+data/output/opportunities/runs/20260829T180911Z/
+```
+
+Open these files in this order:
+
+```text
+source-statuses.csv
+source-pages.csv
+topic-combinations.csv
+destinations.csv
+accessibility-topics.csv
+```
+
+What each file means:
+
+- `source-statuses.csv` tells you what happened for each configured source: crawled successfully, blocked by `robots.txt`, JavaScript-required, or no relevant pages found.
+- `source-pages.csv` is the main list of discovered pages and topics. This is usually the first useful research file.
+- `topic-combinations.csv` aggregates combinations such as `UK + wheelchair + hotels`.
+- `destinations.csv` aggregates destination mentions found from the configured vocabulary.
+- `accessibility-topics.csv` aggregates accessibility-topic mentions found from the configured vocabulary.
+
+The `data/raw/research/runs/<RUN_ID>/` folder is for crawler diagnostics and raw research JSON.
+
+The `data/processed/research/runs/<RUN_ID>/` folder is the normalised JSON version of discovered pages.
+
+The `data/output/opportunities/runs/<RUN_ID>/` folder is the folder intended for day-to-day review in Excel, Google Sheets or another spreadsheet tool.
+
+The files directly under `data/output/opportunities/` are latest snapshots. They are overwritten by real full crawls. Dry runs and source-specific runs do not overwrite them unless you add `--update-latest`. The files inside `data/output/opportunities/runs/<RUN_ID>/` are preserved for that specific run.
+
+If a source you expect to be rich has few or no rows, check `source-statuses.csv`. For example, Enable Holidays may appear as `sitemap_first` because its blog page is rendered by JavaScript and its pagination buttons do not expose separate crawlable URLs. That means the crawler used sitemap URLs as research leads while avoiding JavaScript crawling or anti-bot workarounds.
 
 ### Validate The Workflow
 

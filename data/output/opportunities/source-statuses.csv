@@ -1,0 +1,13 @@
+source,status,start_url,pages_crawled,relevant_pages,sitemap_candidates,failure_count
+SATH,ok,https://sath.org/news-and-blog/,7,7,0,0
+AccessibleGO,sitemap_fallback,https://accessiblego.com/about,1,1,1,1
+Wheel the World,ok,https://wheeltheworld.com/,1,0,0,0
+Tapooz Travel,ok,https://www.tapooztravel.com/,1,1,0,0
+New Directions Travel,no_relevant_pages_found,https://www.newdirectionstravel.org/,1,0,0,2
+Disabled Travel with Georgina,ok,https://disabledtravelwithgeorgina.com/blog/,3,2,0,1
+Carrie-Ann Lightley,no_relevant_pages_found,https://www.carrieannlightley.com/blog,1,0,0,2
+Simply Emma,ok,https://www.simplyemma.co.uk/,20,20,0,0
+Parkdean Resorts,no_relevant_pages_found,https://www.parkdeanresorts.co.uk/holidays/wheelchair-friendly/,1,0,0,2
+Enable Holidays,sitemap_first,https://www.enableholidays.com/blog,0,44,44,0
+TUI Accessible Holidays,no_relevant_pages_found,https://www.tui.co.uk/holidays/accessible-holidays,1,0,0,2
+DisabledHolidays.com,no_relevant_pages_found,https://www.disabledholidays.com/blog/,1,0,0,2

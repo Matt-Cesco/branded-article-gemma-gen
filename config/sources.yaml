@@ -58,6 +58,7 @@ sources:
     start_url: https://www.enableholidays.com/blog
     source_type: accessible_travel_operator
     priority: high
+    discovery_strategy: sitemap_first
 
   - name: TUI Accessible Holidays
     base_url: https://www.tui.co.uk/
