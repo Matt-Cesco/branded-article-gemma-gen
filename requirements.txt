@@ -1,1 +1,9 @@
-# Python dependencies will be added as features are implemented.
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart
+pydantic
+pydantic-settings
+httpx
+markdown
+pyyaml

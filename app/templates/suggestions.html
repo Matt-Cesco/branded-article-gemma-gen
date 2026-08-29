@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Suggestions | Limitless Content Engine{% endblock %}
+{% block content %}
+<div>
+  <h1 class="text-2xl font-semibold">Suggestions</h1>
+  <p class="mt-2 max-w-3xl text-slate-700">Generate future article ideas from observed crawler topics. This does not create full articles.</p>
+</div>
+<section class="mt-6 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+  <h2 class="text-lg font-semibold">Available Research</h2>
+  <dl class="mt-4 grid gap-3 text-sm md:grid-cols-4">
+    <div><dt class="text-slate-600">Source pages</dt><dd class="font-semibold">{{ summary.source_pages }}</dd></div>
+    <div><dt class="text-slate-600">Topic combinations</dt><dd class="font-semibold">{{ summary.topic_combinations }}</dd></div>
+    <div><dt class="text-slate-600">Destinations</dt><dd class="font-semibold">{{ summary.destinations }}</dd></div>
+    <div><dt class="text-slate-600">Accessibility topics</dt><dd class="font-semibold">{{ summary.accessibility_topics }}</dd></div>
+  </dl>
+</section>
+<form action="/suggestions/generate" method="post" class="mt-6 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+  <h2 class="text-lg font-semibold">Filters</h2>
+  <div class="mt-4 grid gap-4 md:grid-cols-2">
+    <label class="block">Destination
+      <input name="destination" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
+    </label>
+    <label class="block">Accessibility topic
+      <input name="accessibility_topic" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
+    </label>
+    <label class="block">Travel topic
+      <input name="travel_topic" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
+    </label>
+    <label class="block">Search intent
+      <input name="search_intent" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
+    </label>
+    <label class="block">Minimum source frequency
+      <input type="number" min="1" max="50" name="minimum_source_frequency" value="1" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
+    </label>
+    <label class="flex items-center gap-2 self-end"><input type="checkbox" name="use_gemma" checked class="h-4 w-4 rounded border-slate-300 text-blue-700 focus:ring-blue-600"> Use Gemma to improve / cluster suggestions</label>
+  </div>
+  <button class="mt-5 rounded bg-orange-600 px-5 py-3 font-semibold text-white shadow-sm hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-offset-2">Generate Suggestions</button>
+</form>
+{% endblock %}

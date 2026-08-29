@@ -3,4 +3,14 @@ name = "limitless-content-engine"
 version = "0.1.0"
 description = "SEO, content research and AI editorial tooling for Limitless Travel"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "jinja2",
+    "python-multipart",
+    "pydantic",
+    "pydantic-settings",
+    "httpx",
+    "markdown",
+    "pyyaml",
+]

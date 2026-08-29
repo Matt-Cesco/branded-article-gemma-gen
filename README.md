@@ -223,5 +223,344 @@ python -m unittest discover -s tests
 Run a Python syntax check:
 
 ```powershell
-python -m compileall research scripts tests
+python -m compileall app research scripts tests
 ```
+
+## Starting The App
+
+Create a virtual environment:
+
+```powershell
+python -m venv .venv
+```
+
+Activate it on Windows:
+
+```powershell
+.venv\Scripts\activate
+```
+
+Install dependencies:
+
+```powershell
+pip install -r requirements.txt
+```
+
+### Install Ollama And Download Gemma
+
+The article generator uses Ollama locally to run Gemma.
+
+Install Ollama for Windows:
+
+```powershell
+irm https://ollama.com/install.ps1 | iex
+```
+
+Alternatively, download the Windows installer from:
+
+```text
+https://ollama.com/download/windows
+```
+
+After installing Ollama, close and reopen your terminal. Confirm Windows can find Ollama:
+
+```powershell
+ollama --version
+```
+
+Download the configured Gemma model:
+
+```powershell
+ollama pull gemma4:12b
+```
+
+Confirm the model is installed:
+
+```powershell
+ollama list
+```
+
+If Windows says `'ollama' is not recognized as an internal or external command`, Ollama is not installed or the terminal was opened before installation finished. Close the terminal, open a new one, and try `ollama --version` again.
+
+Ollama for Windows normally runs its API in the background at:
+
+```text
+http://localhost:11434
+```
+
+If needed, start Ollama manually:
+
+```powershell
+ollama serve
+```
+
+To use a different local model later, pull that model and change `OLLAMA_MODEL` in `.env`.
+
+Ollama settings can be changed in `.env`:
+
+```env
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=gemma4:12b
+OLLAMA_TIMEOUT=180
+MAX_RESEARCH_RECORDS=20
+MAX_RESEARCH_CONTEXT_CHARS=20000
+```
+
+`MAX_RESEARCH_RECORDS` and `MAX_RESEARCH_CONTEXT_CHARS` limit how much crawler output is included when `Use crawler/research data` is enabled. The app still keeps the crawler files on disk, but only the most relevant matching rows are sent into the article prompt.
+
+Do not commit `.env`.
+
+### Run The FastAPI App
+
+In another terminal, run FastAPI from the project root:
+
+```powershell
+cd C:\Users\Matteo\Desktop\gemmaContentEngine
+python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8010
+```
+
+Open:
+
+```text
+http://127.0.0.1:8010
+```
+
+If Windows shows `[WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions`, the default port is blocked or reserved. Change only the port number, for example:
+
+```powershell
+python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8020
+```
+
+If the app says `Ollama is not running or cannot be reached at the configured URL`, check that Ollama is installed and reachable:
+
+```powershell
+ollama list
+```
+
+Then confirm the Gemma model is listed. If it is missing, run:
+
+```powershell
+ollama pull gemma4:12b
+```
+
+Routes:
+
+```text
+/
+```
+
+Article generator. This always loads the Markdown files in `content-guidelines/` in filename order.
+
+```text
+/suggestions
+```
+
+Research-driven topic/title suggestions. This uses local crawler output from `data/` and never fabricates search volume.
+
+The article form includes a checkbox:
+
+```text
+Use crawler/research data
+```
+
+If unchecked, the article prompt uses only the user brief plus mandatory `content-guidelines/`. If checked, the app searches supported local research files and includes only relevant rows. The generated article is saved to:
+
+```text
+articles/drafts/
+```
+
+## Testing Article Quality
+
+Use this workflow to manually compare Gemma output with and without crawler/research context. This is not automatic A/B testing; it is a controlled manual review.
+
+Recommended first test brief:
+
+```text
+Working title:
+Wheelchair Accessible Holidays in Tenerife
+
+Primary keyword:
+wheelchair accessible holidays Tenerife
+
+Secondary keywords:
+accessible holidays Tenerife
+disabled holidays Tenerife
+wheelchair friendly Tenerife
+accessible hotels Tenerife
+
+Article type:
+Destination guide
+
+Search intent:
+Commercial Research
+
+Funnel stage:
+Consideration
+
+Primary reader need:
+The reader wants to understand whether Tenerife could be suitable for their accessibility requirements and what they should consider before choosing a holiday.
+
+Main concerns:
+Accessible accommodation
+Wheelchair-friendly transport
+Airport assistance
+Accessible excursions
+Mobility scooters
+Bathroom suitability
+
+Destination:
+Tenerife
+
+Country:
+Spain
+
+Target length:
+1500
+
+Primary conversion:
+Phone enquiry
+
+CTA strength:
+Automatic based on intent
+```
+
+Only add verified Limitless information when it is genuinely known. Do not use the form to invent factual accessibility claims.
+
+### Test A
+
+Run the article with:
+
+```text
+Use crawler/research data = OFF
+Show prompt/debug details = ON
+```
+
+Review:
+
+- search-intent satisfaction
+- tone
+- accessibility language
+- CRO flow
+- CTA timing
+- factual caution
+- readability
+- repetition
+- adherence to Limitless guidelines
+
+### Test B
+
+Run the exact same brief with:
+
+```text
+Use crawler/research data = ON
+Show prompt/debug details = ON
+```
+
+Compare against Test A.
+
+Research should ideally improve:
+
+- topic coverage
+- headings
+- questions considered
+- destination context
+- article depth
+
+Research must not:
+
+- introduce unsupported Limitless claims
+- make competitor accessibility claims sound verified
+- copy competitor wording
+- significantly damage tone
+- create irrelevant sections
+- overwhelm the article brief
+
+### Debug Review
+
+When `Show prompt/debug details` is enabled, the result page shows a collapsed developer section with:
+
+- model configuration without secrets
+- guideline files loaded in the order sent to Gemma
+- combined guideline character count
+- approximate guideline token count
+- structured article brief
+- whether research data was requested
+- selected research records and files consulted
+- whether research context was truncated
+- system prompt and user prompt shown separately
+- available Ollama metrics
+- generation start time, finish time and duration
+
+The complete assembled prompt is displayed only in the debug UI. It is not saved into article drafts.
+
+### Manual Review Checklist
+
+Search intent:
+
+- Does the article answer the actual query quickly?
+- Does it avoid a generic travel introduction?
+
+Tone:
+
+- Clear?
+- Warm?
+- Empathetic?
+- Reassuring?
+- Human?
+- UK English?
+- Not patronising?
+
+Accessibility:
+
+- Any blanket accessibility claims?
+- Any unsupported hotel, transport or equipment claims?
+- Does it recognise individual requirements?
+
+CRO progression:
+
+```text
+Useful answer
+Practical information
+Accessibility considerations
+Reassurance
+Trust
+Relevant Limitless solution
+Reason to talk to an advisor
+Phone CTA
+```
+
+- Does the CTA feel earned?
+- Is there a genuine reason to call?
+- Does it avoid aggressive urgency?
+
+SEO:
+
+- Does the primary keyword occur naturally?
+- Are headings descriptive?
+- Are related questions answered?
+- Is there keyword stuffing?
+- Is there filler?
+
+AI-writing quality:
+
+Watch for excessive phrases such as:
+
+```text
+Whether you're...
+It's important to note...
+Embark on...
+Vibrant destination...
+Look no further...
+When it comes to...
+```
+
+Also watch for:
+
+- repetitive conclusions
+- formulaic H2 sections
+- unnecessary bullet lists
+- excessive reassurance
+- repeated CTA wording
+- generic travel descriptions
+
+The editorial score generated by Gemma can remain in the article output, but do not treat a model grading its own article as objective evidence. Manual evaluation comes first.

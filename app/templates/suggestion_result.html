@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Suggestion Results | Limitless Content Engine{% endblock %}
+{% block content %}
+<div class="mb-6 flex items-center justify-between gap-4">
+  <div>
+    <h1 class="text-2xl font-semibold">Suggestion Results</h1>
+    <p class="mt-1 text-slate-700">Based on observed crawler/research data. No fake SEO volume is shown.</p>
+  </div>
+  <a href="/suggestions" class="rounded border border-slate-300 bg-white px-4 py-2 font-medium text-slate-800 hover:bg-slate-100">Refine filters</a>
+</div>
+<div class="grid gap-4">
+  {% for suggestion in suggestions %}
+  <article class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <div class="flex flex-col justify-between gap-4 md:flex-row">
+      <div>
+        <h2 class="text-lg font-semibold">{{ suggestion.suggested_title }}</h2>
+        <p class="mt-2 text-sm text-slate-700">{{ suggestion.why }}</p>
+      </div>
+      <a href="{{ suggestion.article_url }}" class="h-fit rounded bg-orange-600 px-4 py-2 text-center font-semibold text-white hover:bg-orange-700">Use this article idea</a>
+    </div>
+    <dl class="mt-4 grid gap-3 text-sm md:grid-cols-3">
+      <div><dt class="text-slate-600">Topic</dt><dd class="font-medium">{{ suggestion.topic }}</dd></div>
+      <div><dt class="text-slate-600">Destination</dt><dd class="font-medium">{{ suggestion.destination or 'n/a' }}</dd></div>
+      <div><dt class="text-slate-600">Accessibility topic</dt><dd class="font-medium">{{ suggestion.accessibility_topic or 'n/a' }}</dd></div>
+      <div><dt class="text-slate-600">Search intent</dt><dd class="font-medium">{{ suggestion.search_intent }}</dd></div>
+      <div><dt class="text-slate-600">Editorial frequency</dt><dd class="font-medium">{{ suggestion.competitor_frequency }}</dd></div>
+      <div><dt class="text-slate-600">Conversion relevance</dt><dd class="font-medium">{{ suggestion.conversion_relevance }}</dd></div>
+    </dl>
+  </article>
+  {% else %}
+  <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <p>No suggestions matched those filters.</p>
+  </section>
+  {% endfor %}
+</div>
+{% endblock %}
