@@ -1,0 +1,40 @@
+mobility:
+  - wheelchair
+  - powered wheelchair
+  - manual wheelchair
+  - mobility scooter
+  - reduced mobility
+  - walking aid
+
+accommodation:
+  - accessible hotel
+  - wheelchair accessible room
+  - adapted room
+  - wet room
+  - roll-in shower
+  - accessible bathroom
+  - grab rails
+  - hoist
+  - profiling bed
+
+transport:
+  - accessible transport
+  - wheelchair transfer
+  - accessible coach
+  - airport assistance
+  - flying with a wheelchair
+  - flying with a mobility scooter
+  - accessible taxi
+
+activities:
+  - accessible excursions
+  - wheelchair accessible beach
+  - accessible attractions
+  - accessible cruise
+  - adaptive activity
+
+support:
+  - carer
+  - care support
+  - personal assistance
+  - additional assistance

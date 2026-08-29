@@ -1,0 +1,504 @@
+[
+  {
+    "source": "SATH",
+    "source_type": "editorial",
+    "url": "https://sath.org/news-and-blog",
+    "canonical_url": "https://sath.org/news-and-blog",
+    "title": "News and Blog – SATH",
+    "h1": "News and Blog",
+    "publication_date": null,
+    "updated_date": null,
+    "author": null,
+    "headings": {
+      "h2": [
+        "Be a Changemaker"
+      ],
+      "h3": [
+        "Categories"
+      ]
+    },
+    "summary": null,
+    "category": null,
+    "tags": [],
+    "destination_mentions": [],
+    "country_mentions": [],
+    "accessibility_topics": [],
+    "travel_topics": [],
+    "topic_combinations": [],
+    "content_type": null,
+    "search_intent_guess": null,
+    "commercial_relevance": "UNKNOWN",
+    "conversion_relevance": "UNKNOWN",
+    "discovered_from": null,
+    "crawl_depth": 0,
+    "crawled_at": "2026-08-29T18:05:09.265929+00:00"
+  },
+  {
+    "source": "SATH",
+    "source_type": "editorial",
+    "url": "https://sath.org/resources",
+    "canonical_url": "https://sath.org/resources",
+    "title": "Resources – SATH",
+    "h1": "Resources",
+    "publication_date": null,
+    "updated_date": null,
+    "author": null,
+    "headings": {
+      "h2": [
+        "All the resources that have been collected for you",
+        "Be a Changemaker"
+      ],
+      "h3": [
+        "Categories"
+      ]
+    },
+    "summary": null,
+    "category": null,
+    "tags": [],
+    "destination_mentions": [],
+    "country_mentions": [],
+    "accessibility_topics": [],
+    "travel_topics": [],
+    "topic_combinations": [],
+    "content_type": null,
+    "search_intent_guess": null,
+    "commercial_relevance": "UNKNOWN",
+    "conversion_relevance": "UNKNOWN",
+    "discovered_from": "https://sath.org/news-and-blog",
+    "crawl_depth": 1,
+    "crawled_at": "2026-08-29T18:05:12.249560+00:00"
+  },
+  {
+    "source": "SATH",
+    "source_type": "editorial",
+    "url": "https://sath.org/destinations",
+    "canonical_url": "https://sath.org/destinations",
+    "title": "Destinations – SATH",
+    "h1": "Destinations",
+    "publication_date": null,
+    "updated_date": null,
+    "author": null,
+    "headings": {
+      "h2": [
+        "Some of the destinations and services you can choose from 👇",
+        "Be a Changemaker"
+      ],
+      "h3": [
+        "Categories"
+      ]
+    },
+    "summary": null,
+    "category": null,
+    "tags": [],
+    "destination_mentions": [],
+    "country_mentions": [],
+    "accessibility_topics": [],
+    "travel_topics": [],
+    "topic_combinations": [],
+    "content_type": "destination_content",
+    "search_intent_guess": null,
+    "commercial_relevance": "UNKNOWN",
+    "conversion_relevance": "UNKNOWN",
+    "discovered_from": "https://sath.org/news-and-blog",
+    "crawl_depth": 1,
+    "crawled_at": "2026-08-29T18:05:15.130427+00:00"
+  },
+  {
+    "source": "SATH",
+    "source_type": "editorial",
+    "url": "https://sath.org/travel-tips-and-access-information",
+    "canonical_url": "https://sath.org/travel-tips-and-access-information",
+    "title": "Travel Tips and Access Information – SATH",
+    "h1": "Travel Tips and Access Information",
+    "publication_date": null,
+    "updated_date": null,
+    "author": null,
+    "headings": {
+      "h2": [
+        "Some of the facts that have been collected for you",
+        "Share your story far and wide by email,",
+        "Get In Touch",
+        "Be a Changemaker"
+      ],
+      "h3": [
+        "Categories"
+      ]
+    },
+    "summary": null,
+    "category": null,
+    "tags": [],
+    "destination_mentions": [],
+    "country_mentions": [],
+    "accessibility_topics": [],
+    "travel_topics": [
+      "travel tips"
+    ],
+    "topic_combinations": [],
+    "content_type": "guide",
+    "search_intent_guess": "informational",
+    "commercial_relevance": "UNKNOWN",
+    "conversion_relevance": "UNKNOWN",
+    "discovered_from": "https://sath.org/news-and-blog",
+    "crawl_depth": 1,
+    "crawled_at": "2026-08-29T18:05:17.456432+00:00"
+  },
+  {
+    "source": "SATH",
+    "source_type": "editorial",
+    "url": "https://sath.org/newsletters-newspapers",
+    "canonical_url": "https://sath.org/newsletters-newspapers",
+    "title": "Newsletters/ Newspapers – SATH",
+    "h1": "Newsletters/ Newspapers",
+    "publication_date": null,
+    "updated_date": null,
+    "author": null,
+    "headings": {
+      "h2": [
+        "Be a Changemaker"
+      ],
+      "h3": []
+    },
+    "summary": null,
+    "category": null,
+    "tags": [],
+    "destination_mentions": [],
+    "country_mentions": [],
+    "accessibility_topics": [],
+    "travel_topics": [],
+    "topic_combinations": [],
+    "content_type": null,
+    "search_intent_guess": null,
+    "commercial_relevance": "UNKNOWN",
+    "conversion_relevance": "UNKNOWN",
+    "discovered_from": "https://sath.org/resources",
+    "crawl_depth": 2,
+    "crawled_at": "2026-08-29T18:05:21.188811+00:00"
+  },
+  {
+    "source": "SATH",
+    "source_type": "editorial",
+    "url": "https://sath.org/government-resources",
+    "canonical_url": "https://sath.org/government-resources",
+    "title": "Government Resources – SATH",
+    "h1": "Government Resources",
+    "publication_date": null,
+    "updated_date": null,
+    "author": null,
+    "headings": {
+      "h2": [
+        "Be a Changemaker"
+      ],
+      "h3": []
+    },
+    "summary": null,
+    "category": null,
+    "tags": [],
+    "destination_mentions": [],
+    "country_mentions": [],
+    "accessibility_topics": [],
+    "travel_topics": [],
+    "topic_combinations": [],
+    "content_type": null,
+    "search_intent_guess": null,
+    "commercial_relevance": "UNKNOWN",
+    "conversion_relevance": "UNKNOWN",
+    "discovered_from": "https://sath.org/resources",
+    "crawl_depth": 2,
+    "crawled_at": "2026-08-29T18:05:24.857354+00:00"
+  },
+  {
+    "source": "SATH",
+    "source_type": "editorial",
+    "url": "https://sath.org/books-access-guides-and-brochures",
+    "canonical_url": "https://sath.org/books-access-guides-and-brochures",
+    "title": "Books, Access Guides And Brochures – SATH",
+    "h1": "Books, Access Guides And Brochures",
+    "publication_date": null,
+    "updated_date": null,
+    "author": null,
+    "headings": {
+      "h2": [
+        "Be a Changemaker"
+      ],
+      "h3": []
+    },
+    "summary": null,
+    "category": null,
+    "tags": [],
+    "destination_mentions": [],
+    "country_mentions": [],
+    "accessibility_topics": [],
+    "travel_topics": [
+      "travel tips"
+    ],
+    "topic_combinations": [],
+    "content_type": "guide",
+    "search_intent_guess": "commercial_investigation",
+    "commercial_relevance": "UNKNOWN",
+    "conversion_relevance": "UNKNOWN",
+    "discovered_from": "https://sath.org/resources",
+    "crawl_depth": 2,
+    "crawled_at": "2026-08-29T18:05:28.494511+00:00"
+  },
+  {
+    "source": "Disabled Travel with Georgina",
+    "source_type": "travel_blog",
+    "url": "https://disabledtravelwithgeorgina.com/blog",
+    "canonical_url": "https://disabledtravelwithgeorgina.com/blog",
+    "title": "Blog – Disabled Travel with Georgina",
+    "h1": null,
+    "publication_date": null,
+    "updated_date": null,
+    "author": null,
+    "headings": {
+      "h2": [
+        "Recent Posts",
+        "Categories"
+      ],
+      "h3": []
+    },
+    "summary": null,
+    "category": null,
+    "tags": [],
+    "destination_mentions": [],
+    "country_mentions": [],
+    "accessibility_topics": [],
+    "travel_topics": [],
+    "topic_combinations": [],
+    "content_type": null,
+    "search_intent_guess": null,
+    "commercial_relevance": "UNKNOWN",
+    "conversion_relevance": "UNKNOWN",
+    "discovered_from": null,
+    "crawl_depth": 0,
+    "crawled_at": "2026-08-29T18:05:33.438853+00:00"
+  },
+  {
+    "source": "Disabled Travel with Georgina",
+    "source_type": "travel_blog",
+    "url": "https://disabledtravelwithgeorgina.com/disney-paris-wheelchair-friendly-hotel",
+    "canonical_url": "https://disabledtravelwithgeorgina.com/disney-paris-wheelchair-friendly-hotel",
+    "title": "Disney Paris Wheelchair Friendly Hotel – Disabled Travel with Georgina",
+    "h1": "Disney Paris Wheelchair Friendly Hotel",
+    "publication_date": null,
+    "updated_date": null,
+    "author": null,
+    "headings": {
+      "h2": [
+        "Recent Posts",
+        "Categories"
+      ],
+      "h3": []
+    },
+    "summary": null,
+    "category": null,
+    "tags": [],
+    "destination_mentions": [],
+    "country_mentions": [],
+    "accessibility_topics": [
+      "wheelchair"
+    ],
+    "travel_topics": [
+      "hotels"
+    ],
+    "topic_combinations": [
+      {
+        "destination": null,
+        "accessibility_topic": "wheelchair",
+        "travel_topic": "hotels",
+        "topic": "wheelchair + hotels"
+      }
+    ],
+    "content_type": null,
+    "search_intent_guess": "commercial_investigation",
+    "commercial_relevance": "LOW",
+    "conversion_relevance": "LOW",
+    "discovered_from": "https://disabledtravelwithgeorgina.com/blog",
+    "crawl_depth": 1,
+    "crawled_at": "2026-08-29T18:05:36.208985+00:00"
+  },
+  {
+    "source": "Carrie-Ann Lightley",
+    "source_type": "travel_blog",
+    "url": "https://www.carrieannlightley.com/blog",
+    "canonical_url": "https://www.carrieannlightley.com/blog",
+    "title": "Travel Stories | Carrie-Ann Lightley",
+    "h1": null,
+    "publication_date": null,
+    "updated_date": null,
+    "author": null,
+    "headings": {
+      "h2": [
+        "7 reasons Newcastle surprised me as a wheelchair user",
+        "The Royal Yacht Britannia, Edinburgh | Wheelchair Accessible Attraction Review",
+        "Homelands Trust Fife Review: An Accessible Girls Trip in Lundin Lodge",
+        "The Old Stables, East Yorkshire | Accessible Holiday Cottage Review",
+        "Grant Arms Hotel, Highlands | Wheelchair Accessible Hotel Review",
+        "A Wheelchair User’s Day Out in Manchester by Train",
+        "Wheelchair Accessible Belfast | Where to Stay and What to Do",
+        "Bowlees and Low Force: Wheelchair Accessible Walks in County Durham",
+        "Talkin Tarn Country Park: Wheelchair Accessible Walk in Cumbria",
+        "Bike & Boot Peak District | Wheelchair Accessible Hotel Review",
+        "10 Wheelchair Accessible Things to Do in the Peak District",
+        "Product review: Enora® Air Seat",
+        "How I manage pain when travelling as a wheelchair user",
+        "Hotel Brooklyn Manchester | Wheelchair Accessible Hotel Review",
+        "Disabled Access at the UK’s hidden gem beach resort: A travel guide to Seaburn for wheelchair users",
+        "Four Wheelchair Accessible Dog Friendly Places to Stay in the UK",
+        "The Dairy | Accessible Yorkshire Dales Holiday Cottage Review",
+        "Disabled Access in Callander, Scotland and beyond: A travel guide for wheelchair users",
+        "Aids to Make Accessible Travel Easier",
+        "What is a FreeWheel wheelchair attachment? (and how does it help?)"
+      ],
+      "h3": []
+    },
+    "summary": "A blog with almost a decade of written stories from Carrie-Ann Lightley, a disabled travel writer, speaker, and accessibility messaging consultant.",
+    "category": null,
+    "tags": [],
+    "destination_mentions": [],
+    "country_mentions": [
+      "Scotland",
+      "UK"
+    ],
+    "accessibility_topics": [
+      "accessible hotel",
+      "wheelchair"
+    ],
+    "travel_topics": [
+      "beaches",
+      "hotels",
+      "excursions",
+      "travel tips",
+      "holidays"
+    ],
+    "topic_combinations": [
+      {
+        "destination": "Scotland",
+        "accessibility_topic": "accessible hotel",
+        "travel_topic": "beaches",
+        "topic": "Scotland + accessible hotel + beaches"
+      },
+      {
+        "destination": "Scotland",
+        "accessibility_topic": "accessible hotel",
+        "travel_topic": "hotels",
+        "topic": "Scotland + accessible hotel + hotels"
+      },
+      {
+        "destination": "Scotland",
+        "accessibility_topic": "accessible hotel",
+        "travel_topic": "excursions",
+        "topic": "Scotland + accessible hotel + excursions"
+      },
+      {
+        "destination": "Scotland",
+        "accessibility_topic": "accessible hotel",
+        "travel_topic": "travel tips",
+        "topic": "Scotland + accessible hotel + travel tips"
+      },
+      {
+        "destination": "Scotland",
+        "accessibility_topic": "accessible hotel",
+        "travel_topic": "holidays",
+        "topic": "Scotland + accessible hotel + holidays"
+      },
+      {
+        "destination": "Scotland",
+        "accessibility_topic": "wheelchair",
+        "travel_topic": "beaches",
+        "topic": "Scotland + wheelchair + beaches"
+      },
+      {
+        "destination": "Scotland",
+        "accessibility_topic": "wheelchair",
+        "travel_topic": "hotels",
+        "topic": "Scotland + wheelchair + hotels"
+      },
+      {
+        "destination": "Scotland",
+        "accessibility_topic": "wheelchair",
+        "travel_topic": "excursions",
+        "topic": "Scotland + wheelchair + excursions"
+      },
+      {
+        "destination": "Scotland",
+        "accessibility_topic": "wheelchair",
+        "travel_topic": "travel tips",
+        "topic": "Scotland + wheelchair + travel tips"
+      },
+      {
+        "destination": "Scotland",
+        "accessibility_topic": "wheelchair",
+        "travel_topic": "holidays",
+        "topic": "Scotland + wheelchair + holidays"
+      },
+      {
+        "destination": "UK",
+        "accessibility_topic": "accessible hotel",
+        "travel_topic": "beaches",
+        "topic": "UK + accessible hotel + beaches"
+      },
+      {
+        "destination": "UK",
+        "accessibility_topic": "accessible hotel",
+        "travel_topic": "hotels",
+        "topic": "UK + accessible hotel + hotels"
+      },
+      {
+        "destination": "UK",
+        "accessibility_topic": "accessible hotel",
+        "travel_topic": "excursions",
+        "topic": "UK + accessible hotel + excursions"
+      },
+      {
+        "destination": "UK",
+        "accessibility_topic": "accessible hotel",
+        "travel_topic": "travel tips",
+        "topic": "UK + accessible hotel + travel tips"
+      },
+      {
+        "destination": "UK",
+        "accessibility_topic": "accessible hotel",
+        "travel_topic": "holidays",
+        "topic": "UK + accessible hotel + holidays"
+      },
+      {
+        "destination": "UK",
+        "accessibility_topic": "wheelchair",
+        "travel_topic": "beaches",
+        "topic": "UK + wheelchair + beaches"
+      },
+      {
+        "destination": "UK",
+        "accessibility_topic": "wheelchair",
+        "travel_topic": "hotels",
+        "topic": "UK + wheelchair + hotels"
+      },
+      {
+        "destination": "UK",
+        "accessibility_topic": "wheelchair",
+        "travel_topic": "excursions",
+        "topic": "UK + wheelchair + excursions"
+      },
+      {
+        "destination": "UK",
+        "accessibility_topic": "wheelchair",
+        "travel_topic": "travel tips",
+        "topic": "UK + wheelchair + travel tips"
+      },
+      {
+        "destination": "UK",
+        "accessibility_topic": "wheelchair",
+        "travel_topic": "holidays",
+        "topic": "UK + wheelchair + holidays"
+      }
+    ],
+    "content_type": "guide",
+    "search_intent_guess": "commercial_investigation",
+    "commercial_relevance": "VERY_HIGH",
+    "conversion_relevance": "VERY_HIGH",
+    "discovered_from": null,
+    "crawl_depth": 0,
+    "crawled_at": "2026-08-29T18:05:41.037687+00:00"
+  }
+]

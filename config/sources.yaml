@@ -1,12 +1,72 @@
 sources:
-  website:
-    enabled: true
+  - name: SATH
+    base_url: https://sath.org/
+    start_url: https://sath.org/news-and-blog/
+    source_type: editorial
+    priority: high
 
-  search_console:
-    enabled: false
+  - name: AccessibleGO
+    base_url: https://accessiblego.com/
+    start_url: https://accessiblego.com/about
+    source_type: accessible_travel_platform
+    priority: medium
 
-  analytics:
-    enabled: false
+  - name: Wheel the World
+    base_url: https://wheeltheworld.com/
+    start_url: https://wheeltheworld.com/
+    source_type: accessible_travel_platform
+    priority: high
 
-  keyword_research:
-    enabled: false
+  - name: Tapooz Travel
+    base_url: https://www.tapooztravel.com/
+    start_url: https://www.tapooztravel.com/
+    source_type: accessible_travel_operator
+    priority: medium
+
+  - name: New Directions Travel
+    base_url: https://www.newdirectionstravel.org/
+    start_url: https://www.newdirectionstravel.org/
+    source_type: accessible_travel_organisation
+    priority: medium
+
+  - name: Disabled Travel with Georgina
+    base_url: https://disabledtravelwithgeorgina.com/
+    start_url: https://disabledtravelwithgeorgina.com/blog/
+    source_type: travel_blog
+    priority: high
+
+  - name: Carrie-Ann Lightley
+    base_url: https://www.carrieannlightley.com/
+    start_url: https://www.carrieannlightley.com/blog
+    source_type: travel_blog
+    priority: high
+
+  - name: Simply Emma
+    base_url: https://www.simplyemma.co.uk/
+    start_url: https://www.simplyemma.co.uk/
+    source_type: travel_blog
+    priority: high
+
+  - name: Parkdean Resorts
+    base_url: https://www.parkdeanresorts.co.uk/
+    start_url: https://www.parkdeanresorts.co.uk/holidays/wheelchair-friendly/
+    source_type: commercial_accessible_travel
+    priority: medium
+
+  - name: Enable Holidays
+    base_url: https://www.enableholidays.com/
+    start_url: https://www.enableholidays.com/blog
+    source_type: accessible_travel_operator
+    priority: high
+
+  - name: TUI Accessible Holidays
+    base_url: https://www.tui.co.uk/
+    start_url: https://www.tui.co.uk/holidays/accessible-holidays
+    source_type: mainstream_accessible_travel
+    priority: medium
+
+  - name: DisabledHolidays.com
+    base_url: https://www.disabledholidays.com/
+    start_url: https://www.disabledholidays.com/blog/
+    source_type: accessible_travel_operator
+    priority: high
