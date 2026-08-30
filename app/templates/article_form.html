@@ -1,10 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Generate Article | Limitless Content Engine{% endblock %}
+{% block title %}Workspace | Limitless Content Assistant{% endblock %}
 {% block content %}
-<form action="/article/generate" method="post" class="space-y-6">
+<form method="post" class="space-y-6">
   <div>
-    <h1 class="text-2xl font-semibold tracking-normal">Generate Article</h1>
-    <p class="mt-2 max-w-3xl text-slate-700">Create a structured article brief and generate a draft with local Gemma. Content guidelines are always included.</p>
+    <p class="text-sm font-semibold uppercase tracking-normal text-blue-800">Limitless Content Assistant</p>
+    <h1 class="mt-1 text-2xl font-semibold tracking-normal">Editorial workspace</h1>
+    <p class="mt-2 max-w-3xl text-slate-700">Research, plan and draft better accessible-travel content. Gemma supports the editor; it does not produce publish-ready copy on its own.</p>
   </div>
 
   {% if error %}
@@ -12,10 +13,13 @@
   {% endif %}
 
   <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-    <h2 class="text-lg font-semibold">Article Basics</h2>
+    <h2 class="text-lg font-semibold">1. Content idea</h2>
     <div class="mt-4 grid gap-4 md:grid-cols-2">
-      <label class="block md:col-span-2">Article title / working title
-        <input required name="title" value="{{ prefill.title or prefill.get('title', '') }}" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
+      <label class="block md:col-span-2">Working topic
+        <input required name="working_topic" value="{{ prefill.working_topic or prefill.title or prefill.get('title', '') }}" placeholder="Planning an accessible holiday" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
+      </label>
+      <label class="block md:col-span-2">Working title
+        <input name="title" value="{{ prefill.title or prefill.get('title', '') }}" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
       </label>
       <label class="block">Primary keyword
         <input name="primary_keyword" value="{{ prefill.primary_keyword or prefill.get('primary_keyword', '') }}" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
@@ -28,12 +32,6 @@
       <label class="block md:col-span-2">Secondary keywords
         <textarea name="secondary_keywords" rows="3" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.secondary_keywords or '' }}</textarea>
       </label>
-    </div>
-  </section>
-
-  <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-    <h2 class="text-lg font-semibold">Search Intent</h2>
-    <div class="mt-4 grid gap-4 md:grid-cols-2">
       <label class="block">Search intent
         <select name="search_intent" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
           {% for option in search_intents %}<option {% if (prefill.search_intent or prefill.intent or '') == option %}selected{% endif %}>{{ option }}</option>{% endfor %}
@@ -48,118 +46,110 @@
   </section>
 
   <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-    <h2 class="text-lg font-semibold">Audience / User Need</h2>
+    <h2 class="text-lg font-semibold">2. Reader</h2>
     <div class="mt-4 grid gap-4">
-      <label class="block">Primary reader need
-        <textarea name="reader_need" rows="3" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.reader_need or '' }}</textarea>
+      <label class="block">Who is this for?
+        <textarea name="audience" rows="3" placeholder="UK travellers aged 50+ with mobility or accessibility requirements who are considering a holiday." class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.audience or '' }}</textarea>
       </label>
-      <label class="block">Main concerns / questions
-        <textarea name="reader_concerns" rows="4" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.reader_concerns or '' }}</textarea>
+      <label class="block">What does the reader want to know?
+        <textarea name="reader_goal" rows="3" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.reader_goal or prefill.reader_need or '' }}</textarea>
       </label>
-      <label class="block">Accessibility requirements to consider
-        <textarea name="accessibility_requirements" rows="4" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.accessibility_requirements or '' }}</textarea>
+      <label class="block">What is stopping them from taking the next step?
+        <textarea name="reader_concerns" rows="3" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.reader_concerns or '' }}</textarea>
+      </label>
+      <label class="block">What should they understand by the end?
+        <textarea name="reader_next_understanding" rows="3" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.reader_next_understanding or '' }}</textarea>
+      </label>
+      <label class="block">What should they do next?
+        <input name="next_action" value="{{ prefill.next_action or 'Call Limitless Travel' }}" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
+      </label>
+    </div>
+  </section>
+
+  <section class="rounded-lg border border-orange-200 bg-orange-50 p-5">
+    <h2 class="text-lg font-semibold">3. Limitless editorial knowledge</h2>
+    <p class="mt-2 text-sm text-slate-700">Add real knowledge from advisors, customers or the business. This helps make the content specific to Limitless rather than generic AI copy.</p>
+    <div class="mt-4 grid gap-4 md:grid-cols-2">
+      <label class="block">Real customer questions
+        <textarea name="real_customer_questions" rows="4" placeholder="What do customers repeatedly ask on the phone? What causes confusion before booking?" class="mt-1 w-full rounded border border-orange-200 px-3 py-2 focus:border-orange-600 focus:outline-none">{{ prefill.real_customer_questions or '' }}</textarea>
+      </label>
+      <label class="block">Travel advisor observations
+        <textarea name="travel_advisor_observations" rows="4" placeholder="What do advisors notice repeatedly? What details often make or break a holiday?" class="mt-1 w-full rounded border border-orange-200 px-3 py-2 focus:border-orange-600 focus:outline-none">{{ prefill.travel_advisor_observations or '' }}</textarea>
+      </label>
+      <label class="block">Common booking problems
+        <textarea name="common_booking_problems" rows="3" class="mt-1 w-full rounded border border-orange-200 px-3 py-2 focus:border-orange-600 focus:outline-none">{{ prefill.common_booking_problems or '' }}</textarea>
+      </label>
+      <label class="block">Real examples / anecdotes
+        <textarea name="real_examples_anecdotes" rows="3" class="mt-1 w-full rounded border border-orange-200 px-3 py-2 focus:border-orange-600 focus:outline-none">{{ prefill.real_examples_anecdotes or '' }}</textarea>
+      </label>
+      <label class="block">Relevant Limitless services / process
+        <textarea name="relevant_limitless_services_process" rows="3" class="mt-1 w-full rounded border border-orange-200 px-3 py-2 focus:border-orange-600 focus:outline-none">{{ prefill.relevant_limitless_services_process or prefill.verified_limitless_information or '' }}</textarea>
+      </label>
+      <label class="block">Verified product / holiday information
+        <textarea name="verified_product_holiday_information" rows="3" class="mt-1 w-full rounded border border-orange-200 px-3 py-2 focus:border-orange-600 focus:outline-none">{{ prefill.verified_product_holiday_information or '' }}</textarea>
+      </label>
+      <label class="block md:col-span-2">Commercial priority
+        <textarea name="commercial_priority" rows="3" placeholder="We want readers to consider calling an advisor rather than continuing to compare generic accessible holiday information online." class="mt-1 w-full rounded border border-orange-200 px-3 py-2 focus:border-orange-600 focus:outline-none">{{ prefill.commercial_priority or '' }}</textarea>
       </label>
     </div>
   </section>
 
   <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-    <h2 class="text-lg font-semibold">Destination</h2>
-    <div class="mt-4 grid gap-4 md:grid-cols-2">
+    <h2 class="text-lg font-semibold">4. Accessibility / factual input</h2>
+    <p class="mt-2 text-sm text-slate-700">The AI must not convert unverified information into confirmed claims.</p>
+    <div class="mt-4 grid gap-4">
+      <label class="block">Accessibility requirements relevant to this article
+        <textarea name="accessibility_requirements" rows="3" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.accessibility_requirements or '' }}</textarea>
+      </label>
+      <label class="block">Verified accessibility facts
+        <textarea name="verified_accessibility_facts" rows="3" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.verified_accessibility_facts or '' }}</textarea>
+      </label>
+      <label class="block">Facts that still need checking
+        <textarea name="facts_to_check" rows="3" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.facts_to_check or '' }}</textarea>
+      </label>
+    </div>
+  </section>
+
+  <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <h2 class="text-lg font-semibold">5. Destination and settings</h2>
+    <div class="mt-4 grid gap-4 md:grid-cols-3">
       <label class="block">Destination
         <input name="destination" value="{{ prefill.destination or '' }}" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
       </label>
       <label class="block">Country
         <input name="country" value="{{ prefill.country or '' }}" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
       </label>
-      <label class="block md:col-span-2">Related destinations
-        <textarea name="related_destinations" rows="3" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.related_destinations or '' }}</textarea>
-      </label>
-    </div>
-  </section>
-
-  <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-    <h2 class="text-lg font-semibold">SEO Settings</h2>
-    <div class="mt-4 grid gap-4 md:grid-cols-3">
-      <label class="block">Target country
-        <input name="target_country" value="{{ prefill.target_country or 'UK' }}" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
-      </label>
-      <label class="block">Language
-        <input name="language" value="{{ prefill.language or 'en-GB' }}" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
-      </label>
-      <label class="block">Target article length
+      <label class="block">Target length guide
         <select name="target_length" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
           {% for option in length_options %}<option value="{{ option }}" {% if (prefill.target_length|string or '1500') == option|string %}selected{% endif %}>{{ option }}</option>{% endfor %}
         </select>
       </label>
-    </div>
-    <div class="mt-4 grid gap-3 md:grid-cols-2">
-      {% for name, label in [
-        ('generate_seo_title', 'Generate SEO title'),
-        ('generate_meta_description', 'Generate meta description'),
-        ('generate_slug', 'Generate URL slug'),
-        ('generate_faq', 'Generate FAQ'),
-        ('generate_internal_links', 'Generate internal-link suggestions'),
-        ('generate_image_suggestions', 'Generate image / alt-text suggestions'),
-        ('generate_editorial_score', 'Generate final editorial score'),
-        ('generate_fact_check_notes', 'Generate fact-check notes')
-      ] %}
-      <label class="flex items-center gap-2"><input type="checkbox" name="{{ name }}" checked class="h-4 w-4 rounded border-slate-300 text-blue-700 focus:ring-blue-600"> {{ label }}</label>
-      {% endfor %}
-    </div>
-  </section>
-
-  <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-    <h2 class="text-lg font-semibold">Conversion Settings</h2>
-    <div class="mt-4 grid gap-4 md:grid-cols-2">
-      <label class="block">Primary conversion goal
-        <select name="primary_conversion_goal" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
-          {% for option in conversion_goals %}<option {% if option == 'Phone enquiry' %}selected{% endif %}>{{ option }}</option>{% endfor %}
-        </select>
-      </label>
-      <label class="block">CTA strength
-        <select name="cta_strength" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">
-          {% for option in cta_strengths %}<option {% if option == 'Automatic based on intent' %}selected{% endif %}>{{ option }}</option>{% endfor %}
-        </select>
-      </label>
-      <label class="block md:col-span-2">CTA context
-        <textarea name="cta_context" rows="3" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.cta_context or '' }}</textarea>
-      </label>
-      <label class="flex items-center gap-2"><input type="checkbox" name="include_mid_article_cta" checked class="h-4 w-4 rounded border-slate-300 text-blue-700 focus:ring-blue-600"> Include contextual mid-article CTA</label>
-      <label class="flex items-center gap-2"><input type="checkbox" name="include_final_cta" checked class="h-4 w-4 rounded border-slate-300 text-blue-700 focus:ring-blue-600"> Include final phone CTA</label>
-    </div>
-  </section>
-
-  <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-    <h2 class="text-lg font-semibold">Trust / Reassurance</h2>
-    <div class="mt-4 grid gap-4">
-      <label class="block">Known trust points
-        <textarea name="trust_points" rows="3" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.trust_points or '' }}</textarea>
-      </label>
-      <label class="block">Customer concerns to reassure
-        <textarea name="reassurance_points" rows="3" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.reassurance_points or '' }}</textarea>
-      </label>
-      <label class="block">Verified Limitless information
-        <textarea name="verified_limitless_information" rows="3" class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.verified_limitless_information or '' }}</textarea>
+      <label class="block md:col-span-3">Approved content brief
+        <textarea name="approved_content_brief" rows="5" placeholder="Paste an approved brief here before drafting, if you have one." class="mt-1 w-full rounded border border-slate-300 px-3 py-2 focus:border-blue-600 focus:outline-none">{{ prefill.approved_content_brief or '' }}</textarea>
       </label>
     </div>
   </section>
 
   <section class="rounded-lg border border-blue-200 bg-blue-50 p-5">
-    <h2 class="text-lg font-semibold">Optional Research Data</h2>
+    <h2 class="text-lg font-semibold">6. Optional research</h2>
     <label class="mt-4 flex items-start gap-3">
-      <input type="checkbox" name="use_research_data" class="mt-1 h-4 w-4 rounded border-slate-300 text-blue-700 focus:ring-blue-600">
-      <span><span class="font-medium">Use crawler/research data</span><br><span class="text-sm text-slate-700">When enabled, relevant rows from the project data folder may inform topic coverage and structure. Content guidelines are always used.</span></span>
+      <input type="checkbox" name="use_research_data" class="mt-1 h-4 w-4 rounded border-slate-300 text-blue-700 focus:ring-blue-600" {% if prefill.use_research_data %}checked{% endif %}>
+      <span><span class="font-medium">Use crawler/research data</span><br><span class="text-sm text-slate-700">Research may inform themes, questions, angles, terminology and gaps. It must not become verified Limitless fact.</span></span>
+    </label>
+    <label class="mt-4 flex items-start gap-3">
+      <input type="checkbox" name="show_debug_details" class="mt-1 h-4 w-4 rounded border-slate-300 text-blue-700 focus:ring-blue-600">
+      <span><span class="font-medium">Show prompt/debug details</span><br><span class="text-sm text-slate-700">Shows prompt, guideline and research diagnostics on the result page.</span></span>
     </label>
   </section>
 
   <section class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-    <h2 class="text-lg font-semibold">Developer Options</h2>
-    <label class="mt-4 flex items-start gap-3">
-      <input type="checkbox" name="show_debug_details" class="mt-1 h-4 w-4 rounded border-slate-300 text-blue-700 focus:ring-blue-600">
-      <span><span class="font-medium">Show prompt/debug details</span><br><span class="text-sm text-slate-700">Shows non-sensitive prompt, guideline, research and generation diagnostics on the result page.</span></span>
-    </label>
+    <h2 class="text-lg font-semibold">7. Content assistant actions</h2>
+    <div class="mt-4 flex flex-wrap gap-3">
+      <button formaction="/brief/generate" class="rounded bg-orange-600 px-5 py-3 font-semibold text-white shadow-sm hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-offset-2">Build brief</button>
+      <button formaction="/outline/generate" class="rounded bg-blue-700 px-5 py-3 font-semibold text-white shadow-sm hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2">Create outline</button>
+      <button formaction="/draft/generate" class="rounded bg-slate-900 px-5 py-3 font-semibold text-white shadow-sm hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2">Draft with Gemma</button>
+      <a href="/review" class="rounded border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-800 hover:bg-slate-100">Review draft</a>
+    </div>
   </section>
-
-  <button class="rounded bg-orange-600 px-5 py-3 font-semibold text-white shadow-sm hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-offset-2">Generate Article</button>
 </form>
 {% endblock %}

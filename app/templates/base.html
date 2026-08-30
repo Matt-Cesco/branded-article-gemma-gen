@@ -3,17 +3,18 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Limitless Content Engine{% endblock %}</title>
+    <title>{% block title %}Limitless Content Assistant{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ url_for('static', path='/css/app.css') }}">
   </head>
   <body class="bg-stone-50 text-slate-900">
     <header class="border-b border-slate-200 bg-white">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a href="/" class="text-lg font-semibold text-slate-950">Limitless Content Engine</a>
+        <a href="/" class="text-lg font-semibold text-slate-950">Limitless Content Assistant</a>
         <nav class="flex gap-2 text-sm font-medium">
-          <a href="/" class="rounded px-3 py-2 {% if request.url.path == '/' %}bg-blue-100 text-blue-900{% else %}text-slate-700 hover:bg-slate-100{% endif %}">Generate Article</a>
+          <a href="/" class="rounded px-3 py-2 {% if request.url.path == '/' or request.url.path.startswith('/brief') or request.url.path.startswith('/draft') %}bg-blue-100 text-blue-900{% else %}text-slate-700 hover:bg-slate-100{% endif %}">Workspace</a>
           <a href="/suggestions" class="rounded px-3 py-2 {% if request.url.path.startswith('/suggestions') %}bg-blue-100 text-blue-900{% else %}text-slate-700 hover:bg-slate-100{% endif %}">Suggestions</a>
+          <a href="/review" class="rounded px-3 py-2 {% if request.url.path.startswith('/review') %}bg-blue-100 text-blue-900{% else %}text-slate-700 hover:bg-slate-100{% endif %}">Draft Review</a>
         </nav>
       </div>
     </header>

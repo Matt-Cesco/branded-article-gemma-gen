@@ -1,12 +1,30 @@
-# Travel Content Engine
+# Limitless Content Assistant
 
 ## Project purpose
 
-The project will help to identify, research, generate and optimise content designed to provide useful information and generate qualified enquiries.
+The Limitless Content Assistant is a local editorial MVP for researching, planning, drafting and reviewing accessible-travel content.
+
+It is not an autonomous article writer. AI-generated output is draft assistance for a human Limitless editor and is not intended to be published without editorial review, fact checking and human approval.
+
+The intended workflow is:
+
+```text
+Research
+-> Content brief
+-> Human Limitless knowledge
+-> Outline
+-> AI-assisted draft
+-> Editorial review
+-> Fact check
+-> Human edit
+-> Publishable content
+```
+
+The product goal is to help editors produce better Limitless Travel content faster by combining search intent, local research, mandatory editorial guidelines, real advisor/customer/business knowledge and careful review.
 
 ## Architecture
 
-The system separates editorial guidance, website understanding, research, scoring, AI-assisted drafting and article lifecycle storage.
+The system separates editorial guidance, website understanding, research, scoring, AI-assisted drafting, editorial review and content lifecycle storage.
 
 ```text
 content-guidelines
@@ -35,10 +53,38 @@ Creates and reviews content using all available context
 
 articles
     |
-Stores briefs, drafts and approved content
+Stores briefs, AI-assisted drafts and reviews
 ```
 
-The AI layer is intentionally model-independent so future integrations can support Gemma, Gemini or other language models without renaming the whole system around one provider.
+The AI layer is intentionally model-independent. The current local provider is Ollama/Gemma, but the application should remain an assistant for editors rather than a model-branded writing toy.
+
+## Editorial Workflow
+
+The homepage is the Content Assistant workspace. It is designed to collect:
+
+- Content idea, search intent and funnel stage.
+- Reader questions, objections and desired next action.
+- Human Limitless knowledge from advisors, customers or the business.
+- Verified accessibility facts and facts still needing checking.
+- Optional crawler/research context from `data/`.
+- An approved content brief before drafting, when available.
+
+The primary actions are:
+
+- `Build brief`: creates a structured SEO/CRO content brief and editorial readiness guidance.
+- `Create outline`: creates an outline without article prose.
+- `Draft with Gemma`: creates an AI-assisted draft labelled as requiring human editing.
+- `Review draft`: reviews pasted draft text for specificity, information density, conversion quality and factual/accessibility risk.
+
+Generated files are saved as Markdown:
+
+```text
+articles/briefs/
+articles/drafts/
+articles/reviews/
+```
+
+Use `/suggestions` to discover research-led topic opportunities, then send a promising topic into the workspace to build a content brief.
 
 ## Development phases
 

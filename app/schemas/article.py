@@ -18,14 +18,21 @@ def split_multi_value(value: Any) -> list[str]:
 
 class ArticleRequest(BaseModel):
     title: str = Field(min_length=3, max_length=220)
+    working_topic: str | None = None
     primary_keyword: str | None = None
     secondary_keywords: list[str] = Field(default_factory=list)
     article_type: str = "SEO guide"
     search_intent: str = "Informational"
     funnel_stage: str = "Awareness"
     reader_need: str | None = None
+    audience: str | None = None
+    reader_goal: str | None = None
     reader_concerns: str | None = None
+    reader_next_understanding: str | None = None
+    next_action: str = "Call Limitless Travel"
     accessibility_requirements: list[str] = Field(default_factory=list)
+    verified_accessibility_facts: str | None = None
+    facts_to_check: str | None = None
     destination: str | None = None
     country: str | None = None
     related_destinations: list[str] = Field(default_factory=list)
@@ -48,6 +55,14 @@ class ArticleRequest(BaseModel):
     trust_points: str | None = None
     reassurance_points: str | None = None
     verified_limitless_information: str | None = None
+    real_customer_questions: str | None = None
+    travel_advisor_observations: str | None = None
+    common_booking_problems: str | None = None
+    real_examples_anecdotes: str | None = None
+    relevant_limitless_services_process: str | None = None
+    verified_product_holiday_information: str | None = None
+    commercial_priority: str | None = None
+    approved_content_brief: str | None = None
     use_research_data: bool = False
     show_debug_details: bool = False
 
@@ -61,16 +76,25 @@ class ArticleRequest(BaseModel):
     @classmethod
     def from_form(cls, form: Any) -> "ArticleRequest":
         checked = set(form.keys())
+        working_topic = _optional(form.get("working_topic"))
+        working_title = _optional(form.get("title")) or _optional(form.get("working_title"))
         return cls(
-            title=str(form.get("title", "")).strip(),
+            title=working_title or working_topic or "",
+            working_topic=working_topic,
             primary_keyword=_optional(form.get("primary_keyword")),
             secondary_keywords=split_multi_value(form.get("secondary_keywords")),
             article_type=str(form.get("article_type") or "SEO guide"),
             search_intent=str(form.get("search_intent") or "Informational"),
             funnel_stage=str(form.get("funnel_stage") or "Awareness"),
             reader_need=_optional(form.get("reader_need")),
+            audience=_optional(form.get("audience")),
+            reader_goal=_optional(form.get("reader_goal")),
             reader_concerns=_optional(form.get("reader_concerns")),
+            reader_next_understanding=_optional(form.get("reader_next_understanding")),
+            next_action=str(form.get("next_action") or "Call Limitless Travel"),
             accessibility_requirements=split_multi_value(form.get("accessibility_requirements")),
+            verified_accessibility_facts=_optional(form.get("verified_accessibility_facts")),
+            facts_to_check=_optional(form.get("facts_to_check")),
             destination=_optional(form.get("destination")),
             country=_optional(form.get("country")),
             related_destinations=split_multi_value(form.get("related_destinations")),
@@ -93,6 +117,14 @@ class ArticleRequest(BaseModel):
             trust_points=_optional(form.get("trust_points")),
             reassurance_points=_optional(form.get("reassurance_points")),
             verified_limitless_information=_optional(form.get("verified_limitless_information")),
+            real_customer_questions=_optional(form.get("real_customer_questions")),
+            travel_advisor_observations=_optional(form.get("travel_advisor_observations")),
+            common_booking_problems=_optional(form.get("common_booking_problems")),
+            real_examples_anecdotes=_optional(form.get("real_examples_anecdotes")),
+            relevant_limitless_services_process=_optional(form.get("relevant_limitless_services_process")),
+            verified_product_holiday_information=_optional(form.get("verified_product_holiday_information")),
+            commercial_priority=_optional(form.get("commercial_priority")),
+            approved_content_brief=_optional(form.get("approved_content_brief")),
             use_research_data="use_research_data" in checked,
             show_debug_details="show_debug_details" in checked,
         )
@@ -106,23 +138,36 @@ class ArticleRequest(BaseModel):
     @staticmethod
     def article_type_options() -> list[str]:
         return [
-            "SEO guide",
+            "Advice guide",
             "Destination guide",
+            "Commercial support article",
+            "FAQ article",
+            "Comparison article",
+            "Educational article",
+            "Landing-page support article",
+            "SEO guide",
             "Accessibility guide",
             "Question / answer article",
             "Commercial research article",
-            "Travel advice",
-            "Holiday inspiration",
             "Other",
         ]
 
     @staticmethod
     def search_intent_options() -> list[str]:
-        return ["Informational", "Problem / Question", "Destination Research", "Commercial Research", "High Commercial Intent"]
+        return [
+            "Informational",
+            "Commercial Research",
+            "Transactional",
+            "Navigational",
+            "Unknown / analyse for me",
+            "Problem / Question",
+            "Destination Research",
+            "High Commercial Intent",
+        ]
 
     @staticmethod
     def funnel_stage_options() -> list[str]:
-        return ["Awareness", "Discovery", "Consideration", "High Intent"]
+        return ["Awareness", "Consideration", "Decision", "Automatic", "Discovery", "High Intent"]
 
     @staticmethod
     def length_options() -> list[int]:

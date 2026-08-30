@@ -23,6 +23,9 @@ class TopicSuggestion:
     conversion_relevance: str
     why: str
     article_url: str
+    likely_reader_question: str
+    possible_conversion_angle: str
+    research_sources: str
 
 
 class SuggestionService:
@@ -67,10 +70,13 @@ class SuggestionService:
             title = f"{title}: A Practical Guide"
         params = {
             "title": title,
+            "working_topic": row.get("topic") or title,
             "primary_keyword": row.get("topic") or title,
             "destination": destination,
             "search_intent": row.get("search_intent") or "Informational",
         }
+        reader_question = f"What should I know about {row.get('topic') or title} before choosing a holiday?"
+        conversion_angle = "Use the article to clarify practical requirements and create a reason to call Limitless Travel."
         return TopicSuggestion(
             suggested_title=title,
             topic=row.get("topic") or "",
@@ -81,6 +87,9 @@ class SuggestionService:
             conversion_relevance=row.get("conversion_relevance") or "UNKNOWN",
             why="This topic appears in crawler research and may help answer a practical accessible-travel planning question.",
             article_url="/?" + parse.urlencode(params),
+            likely_reader_question=reader_question,
+            possible_conversion_angle=conversion_angle,
+            research_sources=f"{row.get('unique_sources') or '0'} source(s)",
         )
 
     async def _try_gemma_enrichment(self, rows: list[dict[str, str]]) -> None:

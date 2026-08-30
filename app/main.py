@@ -13,7 +13,7 @@ from app.routes import articles, suggestions
 settings = get_settings()
 templates = Jinja2Templates(directory=str(settings.repo_root / "app" / "templates"))
 
-app = FastAPI(title="Limitless Travel Content Engine")
+app = FastAPI(title="Limitless Content Assistant")
 app.mount("/static", StaticFiles(directory=str(settings.repo_root / "app" / "static")), name="static")
 app.include_router(articles.router)
 app.include_router(suggestions.router)

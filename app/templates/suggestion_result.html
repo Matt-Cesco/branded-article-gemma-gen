@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Suggestion Results | Limitless Content Engine{% endblock %}
+{% block title %}Suggestion Results | Limitless Content Assistant{% endblock %}
 {% block content %}
 <div class="mb-6 flex items-center justify-between gap-4">
   <div>
     <h1 class="text-2xl font-semibold">Suggestion Results</h1>
-    <p class="mt-1 text-slate-700">Based on observed crawler/research data. No fake SEO volume is shown.</p>
+    <p class="mt-1 text-slate-700">Based on observed crawler/research data. Use these as starting points for briefs, not finished article plans.</p>
   </div>
   <a href="/suggestions" class="rounded border border-slate-300 bg-white px-4 py-2 font-medium text-slate-800 hover:bg-slate-100">Refine filters</a>
 </div>
@@ -16,7 +16,7 @@
         <h2 class="text-lg font-semibold">{{ suggestion.suggested_title }}</h2>
         <p class="mt-2 text-sm text-slate-700">{{ suggestion.why }}</p>
       </div>
-      <a href="{{ suggestion.article_url }}" class="h-fit rounded bg-orange-600 px-4 py-2 text-center font-semibold text-white hover:bg-orange-700">Use this article idea</a>
+      <a href="{{ suggestion.article_url }}" class="h-fit rounded bg-orange-600 px-4 py-2 text-center font-semibold text-white hover:bg-orange-700">Build content brief</a>
     </div>
     <dl class="mt-4 grid gap-3 text-sm md:grid-cols-3">
       <div><dt class="text-slate-600">Topic</dt><dd class="font-medium">{{ suggestion.topic }}</dd></div>
@@ -25,6 +25,9 @@
       <div><dt class="text-slate-600">Search intent</dt><dd class="font-medium">{{ suggestion.search_intent }}</dd></div>
       <div><dt class="text-slate-600">Editorial frequency</dt><dd class="font-medium">{{ suggestion.competitor_frequency }}</dd></div>
       <div><dt class="text-slate-600">Conversion relevance</dt><dd class="font-medium">{{ suggestion.conversion_relevance }}</dd></div>
+      <div><dt class="text-slate-600">Likely reader question</dt><dd class="font-medium">{{ suggestion.likely_reader_question }}</dd></div>
+      <div><dt class="text-slate-600">Possible conversion angle</dt><dd class="font-medium">{{ suggestion.possible_conversion_angle }}</dd></div>
+      <div><dt class="text-slate-600">Research sources</dt><dd class="font-medium">{{ suggestion.research_sources }}</dd></div>
     </dl>
   </article>
   {% else %}
